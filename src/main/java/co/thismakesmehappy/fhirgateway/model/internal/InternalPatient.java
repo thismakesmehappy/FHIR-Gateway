@@ -5,8 +5,8 @@ public record InternalPatient(
         String mrn,
         String firstName,
         String lastName,
-        String birthSex,
-        String gender,
-        String genderIdentity,
+        BiologicalSex birthSex,
+        Gender gender,
+        GenderIdentity genderIdentity,
         String birthDate
 ) { }

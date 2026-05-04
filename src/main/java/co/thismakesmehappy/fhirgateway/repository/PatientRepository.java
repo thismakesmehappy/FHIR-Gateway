@@ -1,5 +1,8 @@
 package co.thismakesmehappy.fhirgateway.repository;
 
+import co.thismakesmehappy.fhirgateway.model.internal.BiologicalSex;
+import co.thismakesmehappy.fhirgateway.model.internal.Gender;
+import co.thismakesmehappy.fhirgateway.model.internal.GenderIdentity;
 import co.thismakesmehappy.fhirgateway.model.internal.InternalPatient;
 import org.springframework.stereotype.Repository;
 
@@ -9,9 +12,9 @@ import java.util.Optional;
 @Repository
 public class PatientRepository {
     private final List<InternalPatient> patients = List.of(
-            new InternalPatient("p1", "MR001", "Alice", "Smith", "female", "female", "female", "1985-93-22"),
-            new InternalPatient("p2", "MR002", "Bob", "Jones", "male", "male", "male", "1972-11-04"),
-            new InternalPatient("p3", "MR003", "Taylow", "Rivera", "female", "non-binary", "non-binary", "1990-07-15")
+            new InternalPatient("p1", "MR001", "Alice", "Smith", BiologicalSex.FEMALE, Gender.FEMALE, GenderIdentity.FEMALE, "1985-93-22"),
+            new InternalPatient("p2", "MR002", "Bob", "Jones", BiologicalSex.MALE, Gender.MALE, GenderIdentity.MALE, "1972-11-04"),
+            new InternalPatient("p3", "MR003", "Taylow", "Rivera", BiologicalSex.FEMALE, Gender.NON_BINARY, GenderIdentity.NON_BINARY, "1990-07-15")
     );
 
     public Optional<InternalPatient> findById(String id) {
