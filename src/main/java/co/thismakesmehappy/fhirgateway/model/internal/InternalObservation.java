@@ -7,6 +7,7 @@ public record InternalObservation(
         String display,
         Double value,
         String unit,
-        String timeStamp
+        String timestamp,
+        InternalObservationStatus status
 ) {
 }
