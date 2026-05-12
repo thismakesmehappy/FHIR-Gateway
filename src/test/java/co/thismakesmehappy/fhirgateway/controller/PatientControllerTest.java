@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,7 +33,7 @@ public class PatientControllerTest{
         when(patientService.getPatientById("001")).thenReturn(patientResource);
         ResponseEntity<PatientResource> response = patientController.getPatientById("001");
         assertEquals(patientResource, response.getBody());
-        assertEquals(HttpStatusCode.valueOf(200), response.getStatusCode());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         verify(patientService).getPatientById("001");
     }
 
@@ -50,7 +50,7 @@ public class PatientControllerTest{
         when(patientService.searchPatientsByIdentifier(("001"))).thenReturn(bundleResource);
         ResponseEntity<BundleResource<PatientResource>> response = patientController.searchPatientsByIdentifier("001");
         assertEquals(bundleResource, response.getBody());
-        assertEquals(HttpStatusCode.valueOf(200), response.getStatusCode());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         verify(patientService).searchPatientsByIdentifier("001");
     }
 

@@ -41,6 +41,6 @@ public class PatientRepositoryTest {
     @Test
     void findAll_returnsAllPAtients() {
         List<InternalPatient> result = repository.findAll();
-        assertEquals(3, result.size());
+        assertEquals(4, result.size());
     }
 }

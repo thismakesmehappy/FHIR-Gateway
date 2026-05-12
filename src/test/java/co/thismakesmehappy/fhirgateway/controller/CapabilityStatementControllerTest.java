@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,7 +31,7 @@ public class CapabilityStatementControllerTest {
         when(capabilityStatementService.getCapabilityStatement()).thenReturn(capabilityStatementResource);
         ResponseEntity<CapabilityStatementResource> response = capabilityStatementController.getMetadata();
         assertEquals(capabilityStatementResource, response.getBody());
-        assertEquals(HttpStatusCode.valueOf(200), response.getStatusCode());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         verify(capabilityStatementService).getCapabilityStatement();
 
 
