@@ -1,5 +1,7 @@
 package co.thismakesmehappy.fhirgateway.model.fhir;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
 /**
@@ -8,9 +10,13 @@ import java.util.List;
  */
 
 public record OperationOutcomeResource(
-        FhirResourceType resourceType,
         List<Issue> issue
 ) {
+    public static final FhirResourceType resourceType = FhirResourceType.OperationOutcome;
+
+    @JsonProperty("resourceType")
+    public FhirResourceType resourceType() { return resourceType; }
+
     public record Issue(
             IssueSeverity severity,
             IssueCode code,

@@ -9,7 +9,6 @@ import java.util.List;
 public class CapabilityStatementService {
     public CapabilityStatementResource getCapabilityStatement() {
         return new CapabilityStatementResource(
-                FhirResourceType.CapabilityStatement,
                 PublicationStatus.active,
                 CapabilityStatementKind.instance,
                 FhirVersion.v4_0_1,

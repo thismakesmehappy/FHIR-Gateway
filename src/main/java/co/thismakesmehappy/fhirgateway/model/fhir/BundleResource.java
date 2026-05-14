@@ -1,5 +1,8 @@
 package co.thismakesmehappy.fhirgateway.model.fhir;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.List;
 
 /**
@@ -8,10 +11,13 @@ import java.util.List;
  */
 
 public record BundleResource<T>(
-        FhirResourceType resourceType,
         int total,
         List<BundleEntry<T>> entry
 ) {
+    public static final FhirResourceType resourceType = FhirResourceType.Bundle;
+
+    @JsonProperty("resourceType")
+    public FhirResourceType resourceType() { return resourceType; }
     public String type() { return "searchset"; }
     public record BundleEntry<T>(T resource) {}
 }

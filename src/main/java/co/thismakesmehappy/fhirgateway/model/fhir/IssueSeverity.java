@@ -10,6 +10,5 @@ public enum IssueSeverity {
     fatal,
     error,
     warning,
-    information,
-    success
+    information
 }

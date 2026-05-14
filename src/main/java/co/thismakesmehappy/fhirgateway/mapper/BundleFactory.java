@@ -1,7 +1,6 @@
 package co.thismakesmehappy.fhirgateway.mapper;
 
 import co.thismakesmehappy.fhirgateway.model.fhir.BundleResource;
-import co.thismakesmehappy.fhirgateway.model.fhir.FhirResourceType;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,7 +14,6 @@ public class BundleFactory {
                 .toList();
 
         return new BundleResource<>(
-                FhirResourceType.Bundle,
                 resources.size(),
                 entries
         );

@@ -1,0 +1,416 @@
+openapi: 3.1.0
+
+info:
+  title: FHIR Gateway API
+  description: A gateway service for accessing FHIR resources
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+  - url: http://localhost:8000
+    description: Local Kong proxy
+
+tags:
+  - name: Health
+    description: Operations related to checking the health of the FHIR gateway
+  - name: Capability
+    description: Operations related to retrieving the FHIR server's capability statement
+  - name: Patient
+    description: Operations related to managing patient resources
+  - name: Observation
+    description: Operations related to FHIR Observations
+
+paths:
+  /healthz:
+    get:
+      tags:
+        - Health
+      summary: Check the health of the FHIR gateway
+      description: Returns a simple health check response.
+      operationId: health
+      responses:
+        "200":
+          description: Health check successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+
+  /fhir/metadata:
+    get:
+      tags:
+        - Capability
+      summary: Retrieve the FHIR server's capability statement
+      description: Returns the metadata describing the FHIR server's capabilities and supported features.
+      operationId: getMetadata
+      responses:
+        "200":
+          description: Successful retrieval of capability statement
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/CapabilityStatementResource"
+        "500":
+          description: Internal server error
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcomeResource"
+
+  /fhir/Patient/{id}:
+    get:
+      tags:
+        - Patient
+      summary: Retrieve a patient by ID
+      description: Returns a FHIR Patient resource for the specified patient ID.
+      operationId: getPatientById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: p1
+      responses:
+        "200":
+          description: Patient resource retrieved successfully
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/PatientResource"
+        "404":
+          description: Patient not found
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcomeResource"
+
+  /fhir/Patient:
+    get:
+      tags:
+        - Patient
+      summary: Search patients by identifier
+      description: Returns a FHIR Bundle resource containing Patient resources matching the specified identifier.
+      operationId: searchPatientsByIdentifier
+      parameters:
+        - name: identifier
+          in: query
+          required: true
+          schema:
+            type: string
+            example: MRN001
+      responses:
+        "200":
+          description: Patients found successfully
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/PatientBundle"
+        "400":
+          description: Missing required parameter
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcomeResource"
+
+  /fhir/Observation:
+    get:
+      tags:
+        - Observation
+      summary: Search FHIR Observations by patient ID
+      description: Returns a bundle of FHIR Observations for a given patient.
+      operationId: searchObservationsByPatient
+      parameters:
+        - name: patient
+          in: query
+          required: true
+          schema:
+            type: string
+            example: p1
+      responses:
+        "200":
+          description: Observations found successfully
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/ObservationBundle"
+        "400":
+          description: Missing required parameter
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcomeResource"
+
+components:
+  schemas:
+    OperationOutcomeResource:
+      type: object
+      properties:
+        resourceType:
+          type: string
+          enum:
+            - OperationOutcome
+        issue:
+          type: array
+          items:
+            $ref: "#/components/schemas/Issue"
+
+    Issue:
+      type: object
+      properties:
+        severity:
+          type: string
+          enum:
+            - fatal
+            - error
+            - warning
+            - information
+        code:
+          type: string
+          enum:
+            - not-found
+            - required
+            - invalid
+            - processing
+            - unknown
+        diagnostics:
+          type: string
+
+    CapabilityStatementResource:
+      type: object
+      properties:
+        resourceType:
+          type: string
+          enum:
+            - CapabilityStatement
+        status:
+          type: string
+          enum:
+            - draft
+            - active
+            - retired
+            - unknown
+        kind:
+          type: string
+          enum:
+            - instance
+            - capability
+            - requirements
+        fhirVersion:
+          type: string
+          enum:
+            - 4.0.1
+        format:
+          type: array
+          items:
+            type: string
+            enum:
+              - application/fhir+json
+        rest:
+          type: array
+          items:
+            $ref: "#/components/schemas/Rest"
+
+    Rest:
+      type: object
+      properties:
+        mode:
+          type: string
+          enum:
+            - client
+            - server
+        resource:
+          type: array
+          items:
+            $ref: "#/components/schemas/Resource"
+
+    Resource:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - Patient
+            - Observation
+        interaction:
+          type: array
+          items:
+            $ref: "#/components/schemas/Interaction"
+
+    Interaction:
+      type: object
+      properties:
+        code:
+          type: string
+          enum:
+            - read
+            - search-type
+
+    PatientResource:
+      type: object
+      properties:
+        resourceType:
+          type: string
+          enum:
+            - Patient
+        id:
+          type: string
+        identifier:
+          type: array
+          items:
+            $ref: "#/components/schemas/Identifier"
+        name:
+          type: array
+          items:
+            $ref: "#/components/schemas/HumanName"
+        gender:
+          type: string
+          enum:
+            - male
+            - female
+            - other
+            - unknown
+        birthDate:
+          type: string
+          example: "1985-03-22"
+        extension:
+          type: array
+          items:
+            $ref: "#/components/schemas/Extension"
+
+    Identifier:
+      type: object
+      properties:
+        system:
+          type: string
+        value:
+          type: string
+
+    HumanName:
+      type: object
+      properties:
+        use:
+          type: string
+        family:
+          type: string
+        given:
+          type: array
+          items:
+            type: string
+
+    Extension:
+      type: object
+      properties:
+        url:
+          type: string
+        valueCode:
+          type: string
+
+    ObservationResource:
+      type: object
+      properties:
+        resourceType:
+          type: string
+          enum:
+            - Observation
+        id:
+          type: string
+        status:
+          type: string
+          enum:
+            - registered
+            - preliminary
+            - final
+            - amended
+            - corrected
+            - cancelled
+            - entered-in-error
+            - unknown
+        code:
+          $ref: "#/components/schemas/CodeableConcept"
+        subject:
+          $ref: "#/components/schemas/Reference"
+        effectiveDateTime:
+          type: string
+          example: "2024-09-15T10:30:00Z"
+        valueQuantity:
+          $ref: "#/components/schemas/Quantity"
+
+    CodeableConcept:
+      type: object
+      properties:
+        coding:
+          type: array
+          items:
+            $ref: "#/components/schemas/Coding"
+
+    Coding:
+      type: object
+      properties:
+        system:
+          type: string
+        code:
+          type: string
+        display:
+          type: string
+
+    Quantity:
+      type: object
+      properties:
+        value:
+          type: number
+          format: double
+        unit:
+          type: string
+        system:
+          type: string
+        code:
+          type: string
+
+    Reference:
+      type: object
+      properties:
+        reference:
+          type: string
+          example: "Patient/p1"
+
+    PatientBundle:
+      type: object
+      properties:
+        resourceType:
+          type: string
+          enum:
+            - Bundle
+        total:
+          type: integer
+          format: int32
+        entry:
+          type: array
+          items:
+            type: object
+            properties:
+              resource:
+                $ref: "#/components/schemas/PatientResource"
+
+    ObservationBundle:
+      type: object
+      properties:
+        resourceType:
+          type: string
+          enum:
+            - Bundle
+        total:
+          type: integer
+          format: int32
+        entry:
+          type: array
+          items:
+            type: object
+            properties:
+              resource:
+                $ref: "#/components/schemas/ObservationResource"

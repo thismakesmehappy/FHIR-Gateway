@@ -1,7 +1,6 @@
 package co.thismakesmehappy.fhirgateway.mapper;
 
 import co.thismakesmehappy.fhirgateway.model.fhir.CodingSystem;
-import co.thismakesmehappy.fhirgateway.model.fhir.FhirResourceType;
 import co.thismakesmehappy.fhirgateway.model.fhir.ObservationResource;
 import co.thismakesmehappy.fhirgateway.model.fhir.ObservationStatus;
 import co.thismakesmehappy.fhirgateway.model.internal.InternalObservation;
@@ -14,7 +13,6 @@ import java.util.List;
 public class FhirObservationMapper {
     public ObservationResource toFhirObservation(InternalObservation observation) {
         return new ObservationResource(
-                FhirResourceType.Observation,
                 observation.id(),
                 mapStatus(observation.status()),
                 buildCode(observation.code(), observation.display()),

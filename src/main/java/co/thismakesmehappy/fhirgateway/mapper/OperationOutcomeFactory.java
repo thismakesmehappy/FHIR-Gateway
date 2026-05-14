@@ -1,6 +1,5 @@
 package co.thismakesmehappy.fhirgateway.mapper;
 
-import co.thismakesmehappy.fhirgateway.model.fhir.FhirResourceType;
 import co.thismakesmehappy.fhirgateway.model.fhir.IssueCode;
 import co.thismakesmehappy.fhirgateway.model.fhir.IssueSeverity;
 import co.thismakesmehappy.fhirgateway.model.fhir.OperationOutcomeResource;
@@ -37,7 +36,6 @@ public class OperationOutcomeFactory {
 
     private OperationOutcomeResource build(IssueSeverity severity, IssueCode code, String diagnostics) {
         return new OperationOutcomeResource(
-                FhirResourceType.OperationOutcome,
                 List.of(new OperationOutcomeResource.Issue(severity, code, diagnostics))
         );
     }
@@ -48,6 +46,6 @@ public class OperationOutcomeFactory {
         List<OperationOutcomeResource.Issue> issues = diagnostics.stream()
                 .map(d -> new OperationOutcomeResource.Issue(severity, code, d))
                 .toList();
-        return new OperationOutcomeResource(FhirResourceType.OperationOutcome, issues);
+        return new OperationOutcomeResource(issues);
     }
 }

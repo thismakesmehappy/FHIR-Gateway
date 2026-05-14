@@ -2,7 +2,6 @@ package co.thismakesmehappy.fhirgateway.mapper;
 
 import co.thismakesmehappy.fhirgateway.model.fhir.AdministrativeGender;
 import co.thismakesmehappy.fhirgateway.model.fhir.CodingSystem;
-import co.thismakesmehappy.fhirgateway.model.fhir.FhirResourceType;
 import co.thismakesmehappy.fhirgateway.model.fhir.PatientResource;
 import co.thismakesmehappy.fhirgateway.model.internal.BiologicalSex;
 import co.thismakesmehappy.fhirgateway.model.internal.Gender;
@@ -23,7 +22,6 @@ public class FhirPatientMapper {
 
     public PatientResource toFhirPatient(InternalPatient patient) {
         return new PatientResource(
-                FhirResourceType.Patient,
                 patient.id(),
                 buildIdentifiers(patient.mrn()),
                 buildNames(patient.lastName(), patient.firstName()),
