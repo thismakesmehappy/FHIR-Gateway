@@ -14,7 +14,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 		),
 		servers = {
 				@Server(url = "http://localhost:8080", description = "Local development server"),
-				@Server(url = "http://localhost:8000", description = "Local Kong proxy")
+				@Server(url = "http://localhost:8100", description = "Local Kong proxy")
 		}
 )
 @SpringBootApplication
