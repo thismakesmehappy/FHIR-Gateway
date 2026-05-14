@@ -1,5 +1,10 @@
 _format_version: "3.0"
 
+consumers:
+  - username: dev-consumer
+    keyauth_credentials:
+      - key: dev-secret-key
+
 services:
   - name: fhir-gateway
     url: http://fhir-gateway:8080
@@ -7,3 +12,13 @@ services:
       - name: all-routes
         paths:
           - /
+    plugins:
+      - name: key-auth
+      - name: rate-limiting
+        config:
+          minute: 10
+          policy: local
+      - name: correlation-id
+        config:
+          header_name: X-Correlation-ID
+          generator: uuid
